@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  localstack:
+    container_name: go_dynamodb_sample_localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=dynamodb
+      - DATA_DIR=./data
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: go_dynamodb_sample_backend
