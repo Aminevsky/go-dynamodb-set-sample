@@ -23,6 +23,7 @@ func NewBaseballTeamRepository(client *dynamodb.Client, tableName string) *Baseb
 	}
 }
 
+// Update updates an item by the team parameter.
 func (r *BaseballTeamRepository) Update(ctx context.Context, team BaseballTeam) error {
 	key, err := attributevalue.Marshal(team.ID)
 	if err != nil {
@@ -43,6 +44,7 @@ func (r *BaseballTeamRepository) Update(ctx context.Context, team BaseballTeam) 
 	return nil
 }
 
+// Create creates an item by the team parameter.
 func (r *BaseballTeamRepository) Create(ctx context.Context, team BaseballTeam) error {
 	item, err := attributevalue.MarshalMap(team)
 	if err != nil {
@@ -60,6 +62,8 @@ func (r *BaseballTeamRepository) Create(ctx context.Context, team BaseballTeam) 
 	return nil
 }
 
+// Get gets an item by the id parameter.
+// Reserve of the response should be unmarshalled to a slice.
 func (r *BaseballTeamRepository) Get(ctx context.Context, id string) (*BaseballTeam, error) {
 	key, err := attributevalue.MarshalMap(map[string]string{"id": id})
 	if err != nil {
@@ -82,6 +86,7 @@ func (r *BaseballTeamRepository) Get(ctx context.Context, id string) (*BaseballT
 	return &team, nil
 }
 
+// AddReserve adds addNumbers to a set "reserve" of the item specified by the id parameter.
 func (r *BaseballTeamRepository) AddReserve(ctx context.Context, id string, addNumbers []int) error {
 	key, err := attributevalue.MarshalMap(map[string]string{"id": id})
 	if err != nil {
@@ -115,6 +120,7 @@ func (r *BaseballTeamRepository) AddReserve(ctx context.Context, id string, addN
 	return nil
 }
 
+// DeleteReserve deletes deleteNumbers from a set "reserve" of the item specified by the id parameter.
 func (r *BaseballTeamRepository) DeleteReserve(ctx context.Context, id string, deleteNumbers []int) error {
 	key, err := attributevalue.MarshalMap(map[string]string{"id": id})
 	if err != nil {
@@ -127,6 +133,7 @@ func (r *BaseballTeamRepository) DeleteReserve(ctx context.Context, id string, d
 		params = append(params, strconv.Itoa(n))
 	}
 
+	// value is number set, not number list
 	update := expression.Delete(expression.Name("reserve"), expression.Value(types.AttributeValueMemberNS{Value: params}))
 	builder, err := expression.NewBuilder().WithUpdate(update).Build()
 	if err != nil {
@@ -147,6 +154,7 @@ func (r *BaseballTeamRepository) DeleteReserve(ctx context.Context, id string, d
 	return nil
 }
 
+// AddBattingOrder adds addNumbers to a list "batting_order" of the item specified by the id parameter.
 func (r *BaseballTeamRepository) AddBattingOrder(ctx context.Context, id string, addNumbers []int) error {
 	key, err := attributevalue.MarshalMap(map[string]string{"id": id})
 	if err != nil {
@@ -176,6 +184,7 @@ func (r *BaseballTeamRepository) AddBattingOrder(ctx context.Context, id string,
 	return nil
 }
 
+// RemoveBattingOrder removes removeNumbers from a list "batting_order" of the item specified by the id parameter.
 func (r *BaseballTeamRepository) RemoveBattingOrder(ctx context.Context, id string, removeNumbers []int) error {
 	key, err := attributevalue.MarshalMap(map[string]string{"id": id})
 	if err != nil {
